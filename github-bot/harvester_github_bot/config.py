@@ -11,6 +11,8 @@ class BotConfig(RequiredConfigMixin):
                                                                                    'repository.')
     required_config.add_option('github_repository', parser=str, default='harvester', doc='Set the name of the target '
                                                                                         'GitHub repository.')
+    required_config.add_option('github_repository_test', parser=str, default='tests', doc='Set the name of the tests '
+                                                                                        'GitHub repository.')
     required_config.add_option('github_token', parser=str, doc='Set the token of the GitHub machine user.')
     required_config.add_option('zenhub_pipeline', parser=str, default='Review', doc='Set the target ZenHub pipeline to '
                                                                                     'handle events for.')
