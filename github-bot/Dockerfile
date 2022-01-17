@@ -6,4 +6,4 @@ RUN pip install -r requirements.txt
 
 COPY . /srv
 
-CMD ["gunicorn", "longhorn_github_bot:app"]
+CMD ["gunicorn", "harvester_github_bot:app"]
