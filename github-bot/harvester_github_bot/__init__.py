@@ -3,7 +3,7 @@ from flask_httpauth import HTTPBasicAuth
 from github import Github
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from longhorn_github_bot.config import get_config
+from harvester_github_bot.config import get_config
 
 import logging
 
