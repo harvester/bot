@@ -12,29 +12,29 @@ The workaround is at:
 The PR for the YAML change is at:
 The PR for the chart change is at:
 
-* [ ] Have the backend code been merged (Manager, Engine, Instance Manager, BackupStore etc) (including `backport-needed/*`)?
+* [ ] Have the backend code been merged (harvester, harvester-installer, etc) (including `backport-needed/*`)?
 The PR is at
 
 * [ ] Which areas/issues this PR might have potential impacts on?
 Area
 Issues
 
-* [ ] **If labeled: require/LEP** Has the Longhorn Enhancement Proposal PR submitted?
-The LEP PR is at
+* [ ] **If labeled: require/HEP** Has the Harvester Enhancement Proposal PR submitted?
+The HEP PR is at
 
-* [ ] **If labeled: area/ui** Has the UI issue filed or ready to be merged (including `backport-needed/*`)?
+* [ ] **If labeled: area/ui** Has the UI issue filed or ready to be merged?
 The UI issue/PR is at
 
-* [ ] **If labeled: require/doc** Has the necessary document PR submitted or merged (including `backport-needed/*`)?
+* [ ] **If labeled: require/doc** Has the necessary document PR submitted or merged?
 The documentation issue/PR is at
 
-* [ ] **If labeled: require/automation-e2e** Has the end-to-end test plan been merged? Have QAs agreed on the automation test case? If only test case skeleton w/o implementation, have you created an implementation issue (including `backport-needed/*`)
+* [ ] **If labeled: require/automation-e2e** Has the end-to-end test plan been merged? Have QAs agreed on the automation test case? If only test case skeleton w/o implementation, have you created an implementation issue?
 The automation skeleton PR is at
-The automation test case PR is at 
-The issue of automation test case implementation is at (please create by [the template](https://github.com/longhorn/longhorn/issues/new?assignees=&labels=area%2Ftest&template=test.md&title=%5BTEST%5D))
+The automation test case PR is at
+The issue of automation test case implementation is at (bot will auto create one using [the template](https://github.com/harvester/test/issues/new?assignees=&labels=area%2Ftest&template=test.md&title=%5BTEST%5D))
 
-* [ ] **If labeled: require/automation-engine** Has the engine integration test been merged (including `backport-needed/*`)?
-The engine automation PR is at
+* [ ] **If labeled: require/integration-test** Has the PR includes the integration test?
+The integration test PR is at
 
 * [ ] **If labeled: require/manual-test-plan** Has the manual test plan been documented?
 The updated manual test plan is at
