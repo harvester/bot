@@ -5,15 +5,6 @@ metadata:
   namespace: github-bot
 ---
 apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRole
-metadata:
-  name: harvester-bot-role
-rules:
-- apiGroups: ["apps"]
-  resources: ["deployments"]
-  verbs: ["get", "patch"]
----
-apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: harvester-bot-binding
@@ -26,3 +17,12 @@ subjects:
 - kind: ServiceAccount
   name: harvester-bot-service-account
   namespace: github-bot
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: harvester-bot-role
+rules:
+- apiGroups: ["apps"]
+  resources: ["deployments"]
+  verbs: ["get", "patch"]
