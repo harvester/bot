@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: github-bot
+  name: github-bot
+  namespace: github-bot
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      component: github-bot
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        component: github-bot
+    spec:
+      containers:
+      - env:
+        - name: FLASK_LOGLEVEL
+          value: info
+        - name: GITHUB_OWNER
+          value: harvester
+        - name: GITHUB_REPOSITORY
+          value: harvester
+        - name: GITHUB_REPOSITORY_TEST
+          value: tests
+        - name: ZENHUB_PIPELINE
+          value: Review,Ready For Testing,Testing
+        - name: FLASK_USERNAME
+          valueFrom:
+            secretKeyRef:
+              key: username
+              name: github-bot-flask-auth
+              optional: false
+        - name: FLASK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: github-bot-flask-auth
+              optional: false
+        - name: GITHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: github_token
+              name: github-bot-token
+              optional: false
+        - name: ZENHUB_TOKEN
+          valueFrom:
+            secretKeyRef:
+              key: zenhub_token
+              name: github-bot-token
+              optional: false
+        image: rancher/harvester-github-bot:master
+        imagePullPolicy: Always
+        name: github-bot
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+      restartPolicy: Always
+      serviceAccountName: harvester-bot-service-account
