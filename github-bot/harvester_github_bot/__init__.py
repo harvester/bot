@@ -64,7 +64,7 @@ def issue_transfer(form):
         app.logger.warning('could not parse issue_number %s as int', issue_number)
         return
     pipeline = form.get('to_pipeline_name')
-    if pipeline != ZENHUB_PIPELINE:
+    if pipeline not in ZENHUB_PIPELINE.split(","):
         app.logger.debug('to_pipeline is {}, ignoring'.format(pipeline))
         return
 
@@ -81,11 +81,11 @@ def issue_transfer(form):
         app.logger.debug('pre-merge checklist does not exist, creating a new one')
         issue.create_comment(render_template('pre-merge.md'))
 
-    require_e2e = False
+    require_e2e = True
     labels = issue.get_labels()
     for label in labels:
-        if label.name == 'require/automation-e2e':
-            require_e2e = True
+        if label.name == 'not-require/test-plan':
+            require_e2e = False
             break
     if require_e2e:
         found = False
