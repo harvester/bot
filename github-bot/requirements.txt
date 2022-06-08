@@ -4,3 +4,6 @@ markupsafe==2.0.1
 Flask-HTTPAuth==4.1.0
 Gunicorn==20.0.4
 PyGitHub==1.51
+
+Werkzeug~=1.0.1
+requests~=2.27.1
