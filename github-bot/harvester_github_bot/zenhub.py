@@ -38,9 +38,9 @@ class Zenhub:
         releases = json.loads(resp.text)
         for r in releases:
             if r['title'] == version:
-                return r['release_id'], None
+                return r['release_id'], ""
 
-        return None, None
+        return None, ""
 
     def add_release_to_issue(self, repo_id, release_id, issue_number):
         add_issues = {'add_issues': [{'repo_id': repo_id, 'issue_number': issue_number}], 'remove_issues': []}
