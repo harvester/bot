@@ -75,7 +75,7 @@ class Backport:
         return ""
 
     def create_issue_if_not_exist(self):
-        title = "[backport %s] %s" % (self.__ver, self.__origin_issue.title)
+        title = "[backport %s] %s" % (self.__ver[0:self.__ver.rindex('.')], self.__origin_issue.title)
         body = "backport the issue #%s" % self.__origin_issue.number
 
         # return if the comment exists
