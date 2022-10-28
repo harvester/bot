@@ -1,6 +1,7 @@
-import requests
 import http
 import json
+
+from harvester_github_bot.utils.http_cli import http_cli
 
 ZENHUB_DEFAULT_BASE_URL = "https://api.zenhub.com"
 ZENHUB_DEFAULT_TIMEOUT = 15
@@ -32,7 +33,7 @@ class Zenhub:
         self.__timeout = timeout
 
     def __get_releases(self, repo_id):
-        resp = requests.get(ZENHUB_PATH_GET_RELEASES % repo_id, timeout=self.__timeout,
+        resp = http_cli.get(ZENHUB_PATH_GET_RELEASES % repo_id, timeout=self.__timeout,
                             headers=self.__authorizationHeader)
         if resp.status_code != http.HTTPStatus.OK:
             return None, error(status_code=resp.status_code, wrap="zenhub get releases failed: %s" % resp.text)
@@ -42,7 +43,7 @@ class Zenhub:
         return releases, ""
 
     def __add_or_remove_issue_from_release(self, release_id, issues):
-        resp = requests.patch(ZENHUB_PATH_ADD_OR_REMOVE_ISSUE_FROM_RELEASE % release_id, timeout=self.__timeout,
+        resp = http_cli.patch(ZENHUB_PATH_ADD_OR_REMOVE_ISSUE_FROM_RELEASE % release_id, timeout=self.__timeout,
                               headers=self.__authorizationHeader, json=issues)
         if resp.status_code != http.HTTPStatus.OK:
             return error(status_code=resp.status_code,
@@ -79,7 +80,7 @@ class Zenhub:
                     return err
             else:
                 remove_issue = {'add_issues': [], 'remove_issues': [{'repo_id': repo_id, 'issue_number': issue_number}]}
-                resp = requests.patch(ZENHUB_PATH_ADD_OR_REMOVE_ISSUE_FROM_RELEASE % r['release_id'],
+                resp = http_cli.patch(ZENHUB_PATH_ADD_OR_REMOVE_ISSUE_FROM_RELEASE % r['release_id'],
                                       timeout=self.__timeout,
                                       headers=self.__authorizationHeader,
                                       json=remove_issue)
@@ -90,7 +91,7 @@ class Zenhub:
         return ""
 
     def get_issue_data(self, repo_id, issue_number):
-        resp = requests.get(ZENHUB_PATH_GET_ISSUE_DATA % (repo_id, issue_number), timeout=self.__timeout,
+        resp = http_cli.get(ZENHUB_PATH_GET_ISSUE_DATA % (repo_id, issue_number), timeout=self.__timeout,
                             headers=self.__authorizationHeader)
         if resp.status_code != http.HTTPStatus.OK:
             return None, error(status_code=resp.status_code, wrap="zenhub get issue data failed: %s" % resp.text)

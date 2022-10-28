@@ -65,7 +65,7 @@ def settings():
     ZENHUB_PIPELINE = config('zenhub_pipeline')
     BACKPORT_LABEL_KEY = config('backport_label_key', default='backport-needed')
 
-    gh_api = Github(config('github_token'))
+    gh_api = Github(config('github_token'), retry=3)
     zenh_api = Zenhub(config('zenhub_token'))
 
     repo = gh_api.get_repo('{}/{}'.format(GITHUB_OWNER, GITHUB_REPOSITORY))
