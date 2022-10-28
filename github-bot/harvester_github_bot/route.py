@@ -4,6 +4,7 @@ from flask import request
 from flask_httpauth import HTTPBasicAuth
 from werkzeug.security import check_password_hash
 
+from harvester_github_bot.issue import sync_milestone_to_releases
 from harvester_github_bot.config import app, FLASK_USERNAME, FLASK_PASSWORD, GITHUB_OWNER, GITHUB_REPOSITORY
 from harvester_github_bot.issue_transfer import issue_transfer
 from harvester_github_bot.backport import backport
@@ -43,7 +44,11 @@ def gh():
     res = request.get_json()
 
     msg = "Skip action"
-    if res.get('action') is not None and res['action'] == 'labeled' and res.get('issue') is not None:
+    if res.get('action') is not None and res.get('issue') is not None:
+        err = sync_milestone_to_releases(res)
+        if err != "":
+            app.logger.warning("sync milestone to release: %s", err)
+
         msg = backport(res)
 
     if msg != "":

@@ -12,8 +12,11 @@ backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
 # Description: backport the issue #link-id
 # Copy assignees and all labels except the backport-needed and add the not-require/test-plan label.
 # Move the issue to the associated milestone and release.
-def backport(obj):
-    bp = Backport(obj['issue']['number'], obj['issue']['labels'])
+def backport(res):
+    if res['action'] != 'labeled':
+        return ""
+
+    bp = Backport(res['issue']['number'], res['issue']['labels'])
 
     err = bp.verify()
     if err != "":
