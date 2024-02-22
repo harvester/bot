@@ -1,7 +1,9 @@
 import re
 
-from harvester_github_bot import zenh_api, repo, \
+from harvester_github_bot import app, zenh_api, repo, \
     BACKPORT_LABEL_KEY
+    
+from harvester_github_bot.exception import CustomException, ExistedBackportComment
 
 # check the issue's include backport-needed/(1.0.3|v1.0.3|v1.0.3-rc0) label
 backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
@@ -13,46 +15,59 @@ backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
 # Copy assignees and all labels except the backport-needed and add the not-require/test-plan label.
 # Move the issue to the associated milestone and release.
 def backport(obj):
-    bp = Backport(obj['issue']['number'], obj['issue']['labels'])
+    normal_labels = []
+    backport_labels = []
+    for label in obj['issue']['labels']:
+        if re.match(backport_label_pattern, label['name']) is not None:
+            backport_labels.append(label)
+        else:
+            normal_labels.append(label)
 
-    err = bp.verify()
-    if err != "":
-        return err
-
-    err = bp.create_issue_if_not_exist()
-    if err != "":
-        return err
-
-    bp.create_comment()
-    return bp.related_release()
+    msg = []
+    for backport_label in backport_labels:
+        try:
+            app.logger.debug(f"issue number {obj['issue']['number']} start to create backport with labels {backport_label['name']}")
+            
+            bp = Backport(obj['issue']['number'], normal_labels, backport_label)
+            bp.verify()
+            bp.create_issue_if_not_exist()
+            bp.create_comment()
+            msg.append(bp.related_release())
+        except ExistedBackportComment as e:
+            app.logger.debug(f"issue number {obj['issue']['number']} had created backport with labels {backport_label['name']}")
+        except CustomException as e:
+            app.logger.exception(f"Custom exception : {str(e)}")
+        except Exception as e:
+            app.logger.exception(e)
+    
+    return ",".join(msg)
 
 
 class Backport:
     def __init__(
             self,
             issue_number,
-            labels
+            labels,
+            backport_label,
     ):
         self.__issue = None
         self.__origin_issue = repo.get_issue(issue_number)
         self.__labels = [repo.get_label("not-require/test-plan")] + \
                         [repo.get_label(label["name"]) for label in labels]
 
-        self.__backport_needed, self.__ver = {}, ""
+        self.__backport_needed = repo.get_label(backport_label["name"])
+        self.__ver = ""
         self.__parse_ver()
 
-        self.__milestone = {}
+        self.__milestone = None
         self.__parse_milestone()
 
     def __parse_ver(self):
-        for idx, label in enumerate(self.__labels):
-            if re.match(backport_label_pattern, label.name) is not None:
-                self.__backport_needed = self.__labels.pop(idx)
-                self.__ver = self.__backport_needed.name.split("/")[1]
-                break
+        self.__ver = self.__backport_needed.name.split("/")[1]
 
         if self.__ver == "":
             return
+        
         if not self.__ver.startswith("v"):
             self.__ver = "v" + self.__ver
 
@@ -68,11 +83,9 @@ class Backport:
 
     def verify(self):
         if self.__ver == "":
-            return "not found any version"
+            raise CustomException("not found any version")
         if self.__ver == self.__origin_issue.milestone.title:
-            return "backport version already exists in the currently issue."
-
-        return ""
+            raise CustomException("backport version already exists in the currently issue.")
 
     def create_issue_if_not_exist(self):
         title = "[backport %s] %s" % (self.__ver[0:self.__ver.rindex('.')], self.__origin_issue.title)
@@ -83,15 +96,19 @@ class Backport:
         comments = self.__origin_issue.get_comments()
         for comment in comments:
             if re.match(comment_pattern, comment.body):
-                return "exists backport comment with %s" % self.__ver
-
-        self.__issue = repo.create_issue(title=title,
-                                         body=body,
-                                         milestone=self.__milestone,
-                                         labels=self.__labels,
-                                         assignees=self.__origin_issue.assignees
-                                         )
-        return ""
+                raise ExistedBackportComment("exists backport comment with %s" % self.__ver)
+            
+        issue_data = {
+            'title': title,
+            'body': body,
+            'labels': self.__labels,
+            'assignees': self.__origin_issue.assignees
+        }
+        
+        if self.__milestone is not None:
+            issue_data['milestone'] = self.__milestone
+        
+        self.__issue = repo.create_issue(**issue_data)
 
     def create_comment(self):
         self.__origin_issue.create_comment(
@@ -101,13 +118,13 @@ class Backport:
     def related_release(self):
         release_id, err = zenh_api.get_release_id_by_version(repo_id=repo.id, version=self.__ver)
         if err != "":
-            return err
+            raise err
 
         if release_id is not None and len(release_id) > 0:
             res = zenh_api.add_release_to_issue(repo_id=repo.id, release_id=release_id,
                                                 issue_number=self.__issue.number)
             if res != "":
-                return "failed to associated release(%s) with repo(%d) and issue(%d): %s" % (
-                    release_id, repo.id, self.__issue.number, res)
+                raise CustomException("failed to associated release(%s) with repo(%d) and issue(%d): %s" % (
+                    release_id, repo.id, self.__issue.number, res))
 
         return "issue number: %d." % self.__issue.number
