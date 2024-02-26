@@ -86,6 +86,9 @@ class Backport:
             raise CustomException("not found any version")
         if self.__ver == self.__origin_issue.milestone.title:
             raise CustomException("backport version already exists in the currently issue.")
+        pattern = re.compile(r"\[backport v\d+\.\d+\]")
+        if re.match(pattern, self.__origin_issue.title):
+            raise CustomException("it's not allowed to backport the backported issue.")
 
     def create_issue_if_not_exist(self):
         title = "[backport %s] %s" % (self.__ver[0:self.__ver.rindex('.')], self.__origin_issue.title)
