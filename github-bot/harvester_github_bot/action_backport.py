@@ -1,9 +1,17 @@
 import re
-
 from harvester_github_bot import app, zenh_api, repo, \
     BACKPORT_LABEL_KEY
-    
 from harvester_github_bot.exception import CustomException, ExistedBackportComment
+
+class ActionBackport:
+    def __init__(self):
+        pass
+    def isMatched(self, action):
+        if action not in ['labeled']:
+            return False
+        return True
+    def action(self, request):
+        return backport(request)
 
 # check the issue's include backport-needed/(1.0.3|v1.0.3|v1.0.3-rc0) label
 backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
@@ -14,10 +22,10 @@ backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
 # Description: backport the issue #link-id
 # Copy assignees and all labels except the backport-needed and add the not-require/test-plan label.
 # Move the issue to the associated milestone and release.
-def backport(obj):
+def backport(request):
     normal_labels = []
     backport_labels = []
-    for label in obj['issue']['labels']:
+    for label in request['issue']['labels']:
         if re.match(backport_label_pattern, label['name']) is not None:
             backport_labels.append(label)
         else:
@@ -26,15 +34,16 @@ def backport(obj):
     msg = []
     for backport_label in backport_labels:
         try:
-            app.logger.debug(f"issue number {obj['issue']['number']} start to create backport with labels {backport_label['name']}")
+            app.logger.debug(f"issue number {request['issue']['number']} start to create backport with labels {backport_label['name']}")
             
-            bp = Backport(obj['issue']['number'], normal_labels, backport_label)
+            bp = Backport(request['issue']['number'], normal_labels, backport_label)
             bp.verify()
             bp.create_issue_if_not_exist()
             bp.create_comment()
-            msg.append(bp.related_release())
+            r = bp.related_release()
+            msg.append(r)
         except ExistedBackportComment as e:
-            app.logger.debug(f"issue number {obj['issue']['number']} had created backport with labels {backport_label['name']}")
+            app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
         except CustomException as e:
             app.logger.exception(f"Custom exception : {str(e)}")
         except Exception as e:
@@ -119,15 +128,17 @@ class Backport:
 
     # associated zenhub releases
     def related_release(self):
-        release_id, err = zenh_api.get_release_id_by_version(repo_id=repo.id, version=self.__ver)
-        if err != "":
-            raise err
+        release_id = zenh_api.get_release_id_by_version(repo_id=repo.id, version=self.__ver)
 
         if release_id is not None and len(release_id) > 0:
-            res = zenh_api.add_release_to_issue(repo_id=repo.id, release_id=release_id,
-                                                issue_number=self.__issue.number)
-            if res != "":
+            try:
+                zenh_api.add_release_to_issue(
+                    repo_id=repo.id,
+                    release_id=release_id,
+                    issue_number=self.__issue.number
+                )
+            except Exception as e:
                 raise CustomException("failed to associated release(%s) with repo(%d) and issue(%d): %s" % (
-                    release_id, repo.id, self.__issue.number, res))
+                    release_id, repo.id, self.__issue.number, e))
 
         return "issue number: %d." % self.__issue.number
