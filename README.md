@@ -21,6 +21,10 @@ cd github-bot
 gunicorn harvester_github_bot:app
 ```
 
+## References
+
+Harvester-bot currently uses [Zenhub REST API](https://github.com/ZenHubIO/API), but it recommends to use GraphQL, more detail on https://developers.zenhub.com/.
+
 ## License
 Copyright (c) 2024 [SUSE](https://www.suse.com/)
 
