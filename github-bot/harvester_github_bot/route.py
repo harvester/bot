@@ -6,7 +6,8 @@ from werkzeug.security import check_password_hash
 
 from harvester_github_bot.config import app, FLASK_USERNAME, FLASK_PASSWORD, GITHUB_OWNER, GITHUB_REPOSITORY
 from harvester_github_bot.issue_transfer import issue_transfer
-from harvester_github_bot.backport import backport
+from harvester_github_bot.action_backport import ActionBackport
+from harvester_github_bot.action_sync_milestone import ActionSyncMilestone
 
 auth = HTTPBasicAuth()
 
@@ -37,19 +38,31 @@ def zenhub():
            }, http.HTTPStatus.OK
 
 
+SUPPORTED_ACTIONS = [
+    ActionBackport(),
+    ActionSyncMilestone(),
+]
+
 @app.route('/github', methods=['POST'])
 @auth.login_required
 def gh():
-    res = request.get_json()
-
+    req = request.get_json()
     msg = "Skip action"
-    if res.get('action') is not None and res['action'] == 'labeled' and res.get('issue') is not None:
-        msg = backport(res)
+    
+    if req.get('issue') is None:
+        return {
+            'message': msg
+        }, http.HTTPStatus.OK
+    
+    for action in SUPPORTED_ACTIONS:
+        if action.isMatched(req.get('action')):
+            msg = action.action(req)
+            break
 
     if msg != "":
         app.logger.debug(msg)
         return {
-                   'message': msg
-               }, http.HTTPStatus.OK
+            'message': msg
+        }, http.HTTPStatus.OK
 
     return {}, http.HTTPStatus.OK
