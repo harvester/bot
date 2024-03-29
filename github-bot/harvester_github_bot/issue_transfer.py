@@ -16,11 +16,17 @@ def issue_transfer(form):
     except ValueError:
         app.logger.warning('could not parse issue_number %s as int', issue_number)
         return
+
     pipeline = form.get('to_pipeline_name')
     if pipeline not in ZENHUB_PIPELINE.split(","):
         app.logger.debug('to_pipeline is {}, ignoring'.format(pipeline))
         return
 
+    issue = repo.get_issue(issue_number)
+    if issue.pull_request is not None:
+        app.logger.debug('issue is a pull request, ignoring')
+        return
+    
     it = IssueTransfer(issue_number)
     it.create_comment_if_not_exist()
     it.create_e2e_issue()

@@ -17,9 +17,21 @@ export GITHUB_REPOSITORY=
 export ZENHUB_PIPELINE="New Issues, Product Backlog, Icebox" # example
 export FLASK_USERNAME="" # Use basic auth here, such as http://username:passowrd@localhost:8080
 export FLASK_PASSWORD=""
+export GITHUB_REPOSITORY_TEST=""
 cd github-bot
 gunicorn harvester_github_bot:app
 ```
+
+## Features
+
+There are two webhooks deal with different features:
+
+1. Github Repository Webhook (`GITHUB_TOKEN`)  
+    When adding backport label on the Github, this bot will handle webhook to do following things:
+    - Create an issue in `GITHUB_REPOSITORY`, and add it into release of Zenhub.
+    - Sync Github milestone to Zenhub release, but don't support opposite way.
+2. Zenhub Integration Custom Webook (`ZENHUB_TOKEN`)  
+    When move the issue to specified pipleline (`ZENHUB_PIPELINE`) in Zenhub, this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
 
 ## References
 
