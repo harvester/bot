@@ -5,7 +5,7 @@ This repo helps to automate the Harvester issue and project management with:
 - Auto-create automation-related e2e test issue (by adding `not-require/test-plan` label).
 - Auto-create a backport issue when an issue contains the `backport-needed/*` label.
 
-## Bootstrap
+## Bootstrapa
 
 Before starting this bot, you should setup following env and run that commands:
 
