@@ -7,6 +7,9 @@ on:
 
 jobs:
   build:
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     
     steps:
@@ -44,6 +47,9 @@ jobs:
           
   deploy:
     needs: build
+    permissions:
+      contents: read
+      id-token: write
     runs-on: ubuntu-latest
     
     steps:
