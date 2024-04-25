@@ -24,5 +24,3 @@ jobs:
         file: github-bot/Dockerfile
         push: false
         tags: rancherlabs/harvester-github-bot:${{ github.event.number }}
-        build-args: |
-          ARCH=amd64
