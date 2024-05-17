@@ -1,8 +1,9 @@
 from harvester_github_bot import app
 from harvester_github_bot import zenh_api, repo
 from harvester_github_bot.exception import CustomException
+from harvester_github_bot.action import Action
 
-class ActionSyncMilestone:
+class ActionSyncMilestone(Action):
     def __init__(self):
         pass
     def isMatched(self, actionRequest):

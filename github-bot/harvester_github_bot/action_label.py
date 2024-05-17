@@ -1,13 +1,13 @@
 from harvester_github_bot.label_action.create_gui_issue import CreateGUIIssue
 from harvester_github_bot.label_action.create_backport import CreateBackport
-
+from harvester_github_bot.action import Action
 
 ALL_LABEL_ACTIONS = [
     CreateBackport,
     CreateGUIIssue
 ]
 
-class ActionLabel:
+class ActionLabel(Action):
     def __init__(self):
         pass
     

@@ -1,11 +1,10 @@
-from harvester_github_bot import app
-from harvester_github_bot import zenh_api, repo
-from harvester_github_bot.exception import CustomException
+from harvester_github_bot import repo
+from harvester_github_bot.action import LabelAction
 import re
 
 CREATE_GUI_ISSUE_LABEL = "require-ui"
 
-class CreateGUIIssue:
+class CreateGUIIssue(LabelAction):
     def __init__(self):
         pass
     

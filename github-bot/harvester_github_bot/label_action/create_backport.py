@@ -3,6 +3,7 @@ from harvester_github_bot import app, zenh_api, repo, \
     BACKPORT_LABEL_KEY
 from harvester_github_bot.exception import CustomException, ExistedBackportComment
 from harvester_github_bot.label_action.create_gui_issue import CREATE_GUI_ISSUE_LABEL
+from harvester_github_bot.action import LabelAction
 
 # check the issue's include backport-needed/(1.0.3|v1.0.3|v1.0.3-rc0) label
 backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
@@ -13,7 +14,7 @@ backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
 # Description: backport the issue #link-id
 # Copy assignees and all labels except the backport-needed and add the not-require/test-plan label.
 # Move the issue to the associated milestone and release.
-class CreateBackport:
+class CreateBackport(LabelAction):
     def __init__(self):
         pass
     

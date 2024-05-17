@@ -55,11 +55,11 @@ def gh():
             'message': msg
         }, http.HTTPStatus.OK
         
-    actionRequest = ActionRequest()
-    actionRequest.setAction(req.get('action'))
+    action_request = ActionRequest()
+    action_request.setAction(req.get('action'))
     
     for action in SUPPORTED_ACTIONS:
-        if action.isMatched(actionRequest):
+        if action.isMatched(action_request):
             msg = action.action(req)
             break
 
