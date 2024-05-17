@@ -5,8 +5,8 @@ from harvester_github_bot.exception import CustomException
 class ActionSyncMilestone:
     def __init__(self):
         pass
-    def isMatched(self, action):
-        if action not in ['opened', 'milestoned', 'demilestoned']:
+    def isMatched(self, actionRequest):
+        if actionRequest.action not in ['opened', 'milestoned', 'demilestoned']:
             return False
         return True
     def action(self, request):
