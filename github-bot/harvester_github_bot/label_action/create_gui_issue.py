@@ -3,19 +3,24 @@ from harvester_github_bot.action import LabelAction
 import re
 
 CREATE_GUI_ISSUE_LABEL = "require-ui"
-
+AREA_UI_LABEL = "area/ui"
 class CreateGUIIssue(LabelAction):
     def __init__(self):
         pass
     
     def isMatched(self, request):
+        matched = False
+        
         for label in request['issue']['labels']:
+            if AREA_UI_LABEL in label['name']:
+                return False
             if CREATE_GUI_ISSUE_LABEL  in label['name']:
-                return True
-        return False
+                matched = True
+            
+        return matched
             
     def action(self, request):
-        self.labels = ["area/ui"]
+        self.labels = [AREA_UI_LABEL]
         
         for label in request['issue']['labels']:
             if CREATE_GUI_ISSUE_LABEL not in label['name']:
