@@ -1,12 +1,13 @@
 from harvester_github_bot import app
 from harvester_github_bot import zenh_api, repo
 from harvester_github_bot.exception import CustomException
+from harvester_github_bot.action import Action
 
-class ActionSyncMilestone:
+class ActionSyncMilestone(Action):
     def __init__(self):
         pass
-    def isMatched(self, action):
-        if action not in ['opened', 'milestoned', 'demilestoned']:
+    def isMatched(self, actionRequest):
+        if actionRequest.action not in ['opened', 'milestoned', 'demilestoned']:
             return False
         return True
     def action(self, request):

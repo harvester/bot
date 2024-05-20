@@ -2,16 +2,8 @@ import re
 from harvester_github_bot import app, zenh_api, repo, \
     BACKPORT_LABEL_KEY
 from harvester_github_bot.exception import CustomException, ExistedBackportComment
-
-class ActionBackport:
-    def __init__(self):
-        pass
-    def isMatched(self, action):
-        if action not in ['labeled']:
-            return False
-        return True
-    def action(self, request):
-        return backport(request)
+from harvester_github_bot.label_action.create_gui_issue import CREATE_GUI_ISSUE_LABEL
+from harvester_github_bot.action import LabelAction
 
 # check the issue's include backport-needed/(1.0.3|v1.0.3|v1.0.3-rc0) label
 backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
@@ -22,35 +14,47 @@ backport_label_pattern = r'^%s\/[\w0-9\.]+' % BACKPORT_LABEL_KEY
 # Description: backport the issue #link-id
 # Copy assignees and all labels except the backport-needed and add the not-require/test-plan label.
 # Move the issue to the associated milestone and release.
-def backport(request):
-    normal_labels = []
-    backport_labels = []
-    for label in request['issue']['labels']:
-        if re.match(backport_label_pattern, label['name']) is not None:
-            backport_labels.append(label)
-        else:
-            normal_labels.append(label)
-
-    msg = []
-    for backport_label in backport_labels:
-        try:
-            app.logger.debug(f"issue number {request['issue']['number']} start to create backport with labels {backport_label['name']}")
-            
-            bp = Backport(request['issue']['number'], normal_labels, backport_label)
-            bp.verify()
-            bp.create_issue_if_not_exist()
-            bp.create_comment()
-            r = bp.related_release()
-            msg.append(r)
-        except ExistedBackportComment as e:
-            app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
-        except CustomException as e:
-            app.logger.exception(f"Custom exception : {str(e)}")
-        except Exception as e:
-            app.logger.exception(e)
+class CreateBackport(LabelAction):
+    def __init__(self):
+        pass
     
-    return ",".join(msg)
+    def isMatched(self, request):
+        for label in request['issue']['labels']:
+            if re.match(backport_label_pattern, label['name']) is not None:
+                return True
+        return False
+                    
+    def action(self, request):
+        normal_labels = []
+        backport_labels = []
+        for label in request['issue']['labels']:
+            if re.match(backport_label_pattern, label['name']) is not None:
+                backport_labels.append(label)
+            else:
+                # backport should not include the 'require-ui' label
+                # because gui issue has its own backport
+                if CREATE_GUI_ISSUE_LABEL not in label['name']:
+                    normal_labels.append(label)
 
+        msg = []
+        for backport_label in backport_labels:
+            try:
+                app.logger.debug(f"issue number {request['issue']['number']} start to create backport with labels {backport_label['name']}")
+                
+                bp = Backport(request['issue']['number'], normal_labels, backport_label)
+                bp.verify()
+                bp.create_issue_if_not_exist()
+                bp.create_comment()
+                r = bp.related_release()
+                msg.append(r)
+            except ExistedBackportComment as e:
+                app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
+            except CustomException as e:
+                app.logger.exception(f"Custom exception : {str(e)}")
+            except Exception as e:
+                app.logger.exception(e)
+        
+        return ",".join(msg)
 
 class Backport:
     def __init__(
