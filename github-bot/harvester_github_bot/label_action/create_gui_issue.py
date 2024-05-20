@@ -11,6 +11,11 @@ class CreateGUIIssue(LabelAction):
     def isMatched(self, request):
         matched = False
         
+        # We can't expect the labels order from Github Webhook request.
+        # It might be ["require-ui/small", "area/ui"] or ["area/ui", "require-ui/small"]
+        # So we need to consider those two cases.
+        # "area/ui" is high priority label.
+        # If "area/ui" is in the labels, we can skip the rest of the labels.
         for label in request['issue']['labels']:
             if AREA_UI_LABEL in label['name']:
                 return False
