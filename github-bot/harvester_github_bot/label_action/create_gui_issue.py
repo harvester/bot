@@ -11,6 +11,9 @@ class CreateGUIIssue(LabelAction):
     def isMatched(self, request):
         matched = False
         
+        if "backport" in request['issue']['title']:
+            return False
+        
         # We can't expect the labels order from Github Webhook request.
         # It might be ["require-ui/small", "area/ui"] or ["area/ui", "require-ui/small"]
         # So we need to consider those two cases.
