@@ -45,7 +45,6 @@ class CreateGUIIssue(LabelAction):
             'title': f"[GUI] {self.original_issue.title}",
             'body': f"GUI Issue from #{self.issue_number}",
             'labels': self.labels,
-            'assignees': self.original_issue.assignees,
         }
         if self.original_issue.milestone is not None:
             issue_data['milestone'] = self.original_issue.milestone
