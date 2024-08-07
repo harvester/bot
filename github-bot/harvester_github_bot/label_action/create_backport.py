@@ -155,4 +155,4 @@ class Backport:
         
         issue = gtihub_project_manager.get_issue(self.__issue.number)
         gtihub_project_manager.add_issue_to_project(issue['id'])
-        return "issue number: %d." % self.__issue.number
+        return

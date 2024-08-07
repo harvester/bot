@@ -7,6 +7,8 @@ class ActionSyncMilestone(Action):
     def __init__(self):
         pass
     def isMatched(self, actionRequest):
+        if actionRequest.event_type not in ['issue']:
+            return False
         if actionRequest.action not in ['opened', 'milestoned', 'demilestoned']:
             return False
         return True

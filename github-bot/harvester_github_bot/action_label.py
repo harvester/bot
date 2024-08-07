@@ -12,6 +12,8 @@ class ActionLabel(Action):
         pass
     
     def isMatched(self, actionRequest):
+        if actionRequest.event_type not in ['issue']:
+            return False
         if actionRequest.action not in ['labeled']:
             return False
         return True

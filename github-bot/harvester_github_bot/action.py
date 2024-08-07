@@ -1,10 +1,9 @@
 import abc
 
 class ActionRequest:
-    def __init__(self):
-        pass
-    def setAction(self, action):
+    def __init__(self, action, event_type):
         self.action = action
+        self.event_type = event_type
 
 
 class Action(abc.ABC):
