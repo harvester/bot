@@ -1,5 +1,5 @@
 import re
-from harvester_github_bot import app, zenh_api, repo, \
+from harvester_github_bot import app, zenh_api, gtihub_project_manager, repo, \
     BACKPORT_LABEL_KEY
 from harvester_github_bot.exception import CustomException, ExistedBackportComment
 from harvester_github_bot.label_action.create_gui_issue import CREATE_GUI_ISSUE_LABEL
@@ -46,6 +46,7 @@ class CreateBackport(LabelAction):
                 bp.create_issue_if_not_exist()
                 bp.create_comment()
                 r = bp.related_release()
+                bp.related_github_project()
                 msg.append(r)
             except ExistedBackportComment as e:
                 app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
@@ -145,4 +146,13 @@ class Backport:
                 raise CustomException("failed to associated release(%s) with repo(%d) and issue(%d): %s" % (
                     release_id, repo.id, self.__issue.number, e))
 
+        return "issue number: %d." % self.__issue.number
+    
+    # associated github_project
+    def related_github_project(self):
+        if gtihub_project_manager.prepared is False:
+            return
+        
+        issue = gtihub_project_manager.get_issue(self.__issue.number)
+        gtihub_project_manager.add_issue_to_project(issue['id'])
         return "issue number: %d." % self.__issue.number
