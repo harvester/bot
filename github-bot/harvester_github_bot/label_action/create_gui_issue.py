@@ -1,4 +1,4 @@
-from harvester_github_bot import repo
+from harvester_github_bot import repo, gtihub_project_manager
 from harvester_github_bot.action import LabelAction
 import re
 
@@ -41,6 +41,7 @@ class CreateGUIIssue(LabelAction):
             return "GUI issue already exist"
         self.__create_gui_issue()
         self.__create_comment()
+        self.__related_github_project()
         return "create GUI issue success"
     
     def __create_gui_issue(self):
@@ -63,3 +64,10 @@ class CreateGUIIssue(LabelAction):
             if re.match(comment_pattern, comment.body):
                 return True
         return False
+
+    def __related_github_project(self):
+        if gtihub_project_manager.prepared is False:
+            return
+        
+        issue = gtihub_project_manager.get_issue(self.gui_issue.number)
+        gtihub_project_manager.add_issue_to_project(issue['id'])
