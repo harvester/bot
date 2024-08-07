@@ -36,3 +36,15 @@ query($organization: String!, $project_number: Int!) {
   }
 }
 """
+
+GET_GLOBAL_ISSUE_QUERY = """
+query Organization($issue_node_id: ID!) {
+    node(id: $issue_node_id) {
+        ... on Issue {
+            title
+            id
+            number
+        }
+    }
+}
+"""
