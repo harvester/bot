@@ -10,6 +10,7 @@ from harvester_github_bot.action import ActionRequest
 from harvester_github_bot.action_label import ActionLabel
 from harvester_github_bot.action_sync_milestone import ActionSyncMilestone
 from harvester_github_bot.action_project import ActionProject
+from harvester_github_bot.action_added_to_default_project import ActionAddedToDefaultProject
 
 auth = HTTPBasicAuth()
 
@@ -41,6 +42,7 @@ SUPPORTED_ACTIONS = [
     ActionLabel(),
     ActionSyncMilestone(),
     ActionProject(),
+    ActionAddedToDefaultProject(),
 ]
 
 SUPPORTED_EVENT = [

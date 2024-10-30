@@ -22,6 +22,12 @@ class ActionProject(Action):
         if gtihub_project_manager.project()["id"] != project_node_id:
             app.logger.error("project is not matched")
             return
+    
+        # In github projectv2, every status filed changed will trigger a projectv2 event
+        # For example, changing a `Estimate` and `Status`.
+        # But, we only care about the `Status` field.
+        if request['changes']['field_value']['field_name'] != "Status":
+            return
         
         target_column = request['changes']['field_value']['to']
         if target_column["name"] not in ZENHUB_PIPELINE.split(","):
