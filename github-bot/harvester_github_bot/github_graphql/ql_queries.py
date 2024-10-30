@@ -19,6 +19,22 @@ query($organization: String!, $project_number: Int!) {
       id
       title
       number
+      fields(first: 20) {
+        nodes {
+          ... on ProjectV2FieldCommon {
+            id
+            name
+          }
+          ... on ProjectV2SingleSelectField {
+            id
+            name
+            options {
+              id
+              name
+            }
+          }
+        }
+      }
     }
   }
 }

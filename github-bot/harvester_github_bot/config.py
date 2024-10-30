@@ -7,6 +7,7 @@ from werkzeug.security import generate_password_hash
 from github import Github
 from harvester_github_bot.github_graphql.manager import GitHubProjectManager
 from harvester_github_bot.zenhub import Zenhub
+from harvester_github_bot.global_variables import *
 
 FLASK_LOGLEVEL = ""
 FLASK_PASSWORD = ""
@@ -18,12 +19,12 @@ GITHUB_PROJECT_NUMBER = ""
 ZENHUB_PIPELINE = ""
 BACKPORT_LABEL_KEY = ""
 
-app = Flask(__name__)
-gh_api = {}
-zenh_api = {}
-repo = {}
-repo_test = {}
-gtihub_project_manager = {}
+# app = Flask(__name__)
+# gh_api = {}
+# zenh_api = {}
+# repo = {}
+# repo_test = {}
+# gtihub_project_manager = {}
 
 class BotConfig(RequiredConfigMixin):
     required_config = ConfigOptions()

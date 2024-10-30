@@ -9,7 +9,7 @@ class ActionSyncMilestone(Action):
     def isMatched(self, actionRequest):
         if actionRequest.event_type not in ['issue']:
             return False
-        if actionRequest.action not in ['opened', 'milestoned', 'demilestoned']:
+        if actionRequest.action not in ['milestoned', 'demilestoned']:
             return False
         return True
     def action(self, request):
