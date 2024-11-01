@@ -19,12 +19,6 @@ GITHUB_PROJECT_NUMBER = ""
 ZENHUB_PIPELINE = ""
 BACKPORT_LABEL_KEY = ""
 
-# app = Flask(__name__)
-# gh_api = {}
-# zenh_api = {}
-# repo = {}
-# repo_test = {}
-# gtihub_project_manager = {}
 
 class BotConfig(RequiredConfigMixin):
     required_config = ConfigOptions()
