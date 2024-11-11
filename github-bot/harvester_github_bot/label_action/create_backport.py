@@ -46,7 +46,6 @@ class CreateBackport(LabelAction):
                 bp.create_issue_if_not_exist()
                 bp.create_comment()
                 r = bp.related_release()
-                bp.related_github_project()
                 msg.append(r)
             except ExistedBackportComment as e:
                 app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
@@ -147,12 +146,3 @@ class Backport:
                     release_id, repo.id, self.__issue.number, e))
 
         return "issue number: %d." % self.__issue.number
-    
-    # associated github_project
-    def related_github_project(self):
-        if gtihub_project_manager.prepared is False:
-            return
-        
-        issue = gtihub_project_manager.get_issue(self.__issue.number)
-        gtihub_project_manager.add_issue_to_project(issue['id'])
-        return
