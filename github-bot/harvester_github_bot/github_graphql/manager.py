@@ -9,17 +9,8 @@ class GitHubProjectManager:
         self.repository = repository
         self.headers = headers
         self.url = "https://api.github.com/graphql"
-        
-        try:
-            self.__project = self.__get_orgnization_project(project_number)
-            self.status_node_id, self.status = self.get_status_fields()
-            
-            # This is a temporary solution to make sure Github Project things don't break Zenhub when Github Project is not found.
-            # After deprecate the Zenhub, we will remove this `prepared` part.
-            self.prepared = True
-        except Exception as e:
-            app.logger.exception(f"Failed to get project information : {str(e)}")
-            self.prepared = False
+        self.__project = self.__get_orgnization_project(project_number)
+        self.status_node_id, self.status = self.get_status_fields()
             
     def get_status_fields(self):
             nodes = self.__project.get("fields").get("nodes")

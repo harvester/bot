@@ -45,8 +45,7 @@ class CreateBackport(LabelAction):
                 bp.verify()
                 bp.create_issue_if_not_exist()
                 bp.create_comment()
-                r = bp.related_release()
-                msg.append(r)
+                msg.append("create backport issue success")
             except ExistedBackportComment as e:
                 app.logger.debug(f"issue number {request['issue']['number']} had created backport with labels {backport_label['name']}")
             except CustomException as e:
@@ -129,20 +128,3 @@ class Backport:
     def create_comment(self):
         self.__origin_issue.create_comment(
             body='added `%s` issue: #%d.' % (self.__backport_needed.name, self.__issue.number))
-
-    # associated zenhub releases
-    def related_release(self):
-        release_id = zenh_api.get_release_id_by_version(repo_id=repo.id, version=self.__ver)
-
-        if release_id is not None and len(release_id) > 0:
-            try:
-                zenh_api.add_release_to_issue(
-                    repo_id=repo.id,
-                    release_id=release_id,
-                    issue_number=self.__issue.number
-                )
-            except Exception as e:
-                raise CustomException("failed to associated release(%s) with repo(%d) and issue(%d): %s" % (
-                    release_id, repo.id, self.__issue.number, e))
-
-        return "issue number: %d." % self.__issue.number
