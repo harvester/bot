@@ -1,7 +1,7 @@
 from harvester_github_bot.issue_transfer import IssueTransfer
 from harvester_github_bot.action import Action
 from harvester_github_bot import app, gtihub_project_manager, \
-    ZENHUB_PIPELINE, ZENHUB_PIPELINE
+    E2E_PIPELINE
 
 class ActionProject(Action):
     def __init__(self):
@@ -30,7 +30,7 @@ class ActionProject(Action):
             return
         
         target_column = request['changes']['field_value']['to']
-        if target_column["name"] not in ZENHUB_PIPELINE.split(","):
+        if target_column["name"] not in E2E_PIPELINE.split(","):
             app.logger.debug('target_column is {}, ignoring'.format(target_column["name"]))
             return
         

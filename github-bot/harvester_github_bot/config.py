@@ -6,7 +6,6 @@ from everett.manager import ConfigManager, ConfigOSEnv
 from werkzeug.security import generate_password_hash
 from github import Github
 from harvester_github_bot.github_graphql.manager import GitHubProjectManager
-from harvester_github_bot.zenhub import Zenhub
 from harvester_github_bot.global_variables import *
 
 FLASK_LOGLEVEL = ""
@@ -16,7 +15,7 @@ GITHUB_OWNER = ""
 GITHUB_REPOSITORY = ""
 GITHUB_REPOSITORY_TEST = ""
 GITHUB_PROJECT_NUMBER = ""
-ZENHUB_PIPELINE = ""
+E2E_PIPELINE = ""
 BACKPORT_LABEL_KEY = ""
 
 
@@ -35,10 +34,9 @@ class BotConfig(RequiredConfigMixin):
     required_config.add_option('github_project_number', parser=int, doc='Set the project id of the github '
                                                                                           'GitHub Project ID.')
     required_config.add_option('github_token', parser=str, doc='Set the token of the GitHub machine user.')
-    required_config.add_option('zenhub_pipeline', parser=str, default='Review,Ready For Testing,Testing',
-                               doc='Set the target ZenHub pipeline to '
+    required_config.add_option('e2e_pipeline', parser=str, default='Review,Ready For Testing,Testing',
+                               doc='Set the target e2e pipeline to '
                                    'handle events for.')
-    required_config.add_option('zenhub_token', parser=str, doc='Set the token of the ZenHub machine user.')
     required_config.add_option('backport_label_key', parser=str, default='backport-needed',
                                doc='Set the backport label key.')
 
@@ -52,7 +50,7 @@ def get_config():
 
 def settings():
     global FLASK_LOGLEVEL, FLASK_PASSWORD, FLASK_USERNAME, GITHUB_OWNER, GITHUB_REPOSITORY, GITHUB_PROJECT_NUMBER, GITHUB_REPOSITORY_TEST, \
-        ZENHUB_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, gtihub_project_manager
+        E2E_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, gtihub_project_manager
     config = get_config()
     FLASK_LOGLEVEL = config('flask_loglevel')
     FLASK_PASSWORD = generate_password_hash(config('flask_password'))
@@ -61,11 +59,10 @@ def settings():
     GITHUB_REPOSITORY = config('github_repository')
     GITHUB_REPOSITORY_TEST = config('github_repository_test')
     GITHUB_PROJECT_NUMBER = config('github_project_number')
-    ZENHUB_PIPELINE = config('zenhub_pipeline')
+    E2E_PIPELINE = config('e2e_pipeline')
     BACKPORT_LABEL_KEY = config('backport_label_key', default='backport-needed')
 
     gh_api = Github(config('github_token'))
-    zenh_api = Zenhub(config('zenhub_token'))
     repo = gh_api.get_repo('{}/{}'.format(GITHUB_OWNER, GITHUB_REPOSITORY))
     repo_test = gh_api.get_repo('{}/{}'.format(GITHUB_OWNER, GITHUB_REPOSITORY_TEST))
     gtihub_project_manager = GitHubProjectManager(GITHUB_OWNER, GITHUB_REPOSITORY, GITHUB_PROJECT_NUMBER, {

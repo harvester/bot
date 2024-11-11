@@ -26,11 +26,13 @@ spec:
           value: info
         - name: GITHUB_OWNER
           value: harvester
+        - name: GITHUB_PROJECT_NUMBER
+          value: "1"
         - name: GITHUB_REPOSITORY
           value: harvester
         - name: GITHUB_REPOSITORY_TEST
           value: tests
-        - name: ZENHUB_PIPELINE
+        - name: E2E_PIPELINE
           value: Review,Ready For Testing,Testing
         - name: FLASK_USERNAME
           valueFrom:
@@ -48,12 +50,6 @@ spec:
           valueFrom:
             secretKeyRef:
               key: github_token
-              name: github-bot-token
-              optional: false
-        - name: ZENHUB_TOKEN
-          valueFrom:
-            secretKeyRef:
-              key: zenhub_token
               name: github-bot-token
               optional: false
         image: rancher/harvester-github-bot:master

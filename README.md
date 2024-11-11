@@ -10,11 +10,11 @@ This repo helps to automate the Harvester issue and project management with:
 Before starting this bot, you should setup following env and run that commands:
 
 ```sh
-export ZENHUB_TOKEN=""
 export GITHUB_TOKEN="" 
 export GITHUB_OWNER="" 
 export GITHUB_REPOSITORY=
-export ZENHUB_PIPELINE="New Issues, Product Backlog, Icebox" # example
+export GITHUB_PROJECT_NUMBER=""
+export E2E_PIPELINE="New Issues, Product Backlog, Icebox" # example
 export FLASK_USERNAME="" # Use basic auth here, such as http://username:passowrd@localhost:8080
 export FLASK_PASSWORD=""
 export GITHUB_REPOSITORY_TEST=""
@@ -28,14 +28,13 @@ There are two webhooks deal with different features:
 
 1. Github Repository Webhook (`GITHUB_TOKEN`)  
     When adding backport label on the Github, this bot will handle webhook to do following things:
-    - Create an issue in `GITHUB_REPOSITORY`, and add it into release of Zenhub.
-    - Sync Github milestone to Zenhub release, but don't support opposite way.
-2. Zenhub Integration Custom Webook (`ZENHUB_TOKEN`)  
-    When move the issue to specified pipleline (`ZENHUB_PIPELINE`) in Zenhub, this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
+    - Create an issue in `GITHUB_REPOSITORY`.
+2. Github Organization Webook (`GITHUB_PROJECT_NUMBER`)  
+    When moving the issue to specified pipleline (`E2E_PIPELINE`) in Github Project, this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
 
 ## References
 
-Harvester-bot currently uses [Zenhub REST API](https://github.com/ZenHubIO/API), but it recommends to use GraphQL, more detail on https://developers.zenhub.com/.
+Harvester-bot currently uses Github Project Grahql to create back
 
 ## License
 Copyright (c) 2024 [SUSE](https://www.suse.com/)
