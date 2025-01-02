@@ -18,7 +18,7 @@ def verify_password(username, password):
         return username
 
 SUPPORTED_ACTIONS = [
-    ActionLabel(),
+    # ActionLabel(),
     ActionProject(),
 ]
 
