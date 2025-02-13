@@ -22,6 +22,14 @@ cd github-bot
 gunicorn harvester_github_bot:app
 ```
 
+## Deployment
+
+1.How do we deploy harvester github bot?
+-> We use docker-compose.
+
+2. How do we rollout the latest image?
+-> We use watchover.
+
 ## Features
 
 There are two webhooks deal with different features:
