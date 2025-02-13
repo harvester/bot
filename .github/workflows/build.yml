@@ -42,31 +42,3 @@ jobs:
         file: github-bot/Dockerfile
         push: true
         tags: rancherlabs/harvester-github-bot:master
-          
-  deploy:
-    needs: build
-    permissions:
-      contents: read
-      id-token: write
-    runs-on: ubuntu-latest
-    
-    steps:
-    - name: Read some Secrets
-      uses: rancher-eio/read-vault-secrets@main
-      with:
-        secrets: |
-          secret/data/github/repo/${{ github.repository }}/kubectl/harvester/bot/credentials token | TOKEN ;
-          secret/data/github/repo/${{ github.repository }}/apiaddress/harvester/bot/credentials token | API_SERVER 
-
-    - name: Install kubectl
-      run: |
-        curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
-        chmod +x ./kubectl
-        sudo mv ./kubectl /usr/local/bin/kubectl
-        
-    - name: Restart Deployment
-      run: |
-        kubectl rollout restart deployment -n github-bot github-bot --token=$TOKEN --server=$API_SERVER --insecure-skip-tls-verify
-      env:
-        TOKEN: ${{ env.TOKEN }}
-        API_SERVER_ADDR: ${{ env.API_SERVER }}
