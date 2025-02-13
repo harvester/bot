@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  harvester-github-bot:
+    image: rancherlabs/harvester-github-bot:master
+    container_name: harvester-github-bot
+    restart: always
+    pull_policy: always
+    ports:
+      - "80:8080"
+    env_file:
+      - ./harvester-github-bot.env
+
+  watchover:
+    image: v2tec/watchtower:latest
+    container_name: watchover
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - WATCHTOWER_POLL_INTERVAL=3600
