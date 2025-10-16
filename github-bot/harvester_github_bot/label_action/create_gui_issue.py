@@ -1,4 +1,4 @@
-from harvester_github_bot import repo, gtihub_project_manager
+from harvester_github_bot import repo
 from harvester_github_bot.action import LabelAction
 import re
 

@@ -14,7 +14,8 @@ FLASK_USERNAME = ""
 GITHUB_OWNER = ""
 GITHUB_REPOSITORY = ""
 GITHUB_REPOSITORY_TEST = ""
-GITHUB_PROJECT_NUMBER = ""
+DEVELOPER_GITHUB_PROJECT_NUMBER = ""
+COMMUNITY_GITHUB_PROJECT_NUMBER = ""
 E2E_PIPELINE = ""
 BACKPORT_LABEL_KEY = ""
 
@@ -31,8 +32,10 @@ class BotConfig(RequiredConfigMixin):
                                                                                          'GitHub repository.')
     required_config.add_option('github_repository_test', parser=str, default='tests', doc='Set the name of the tests '
                                                                                           'GitHub repository.')
-    required_config.add_option('github_project_number', parser=int, doc='Set the project id of the github '
-                                                                                          'GitHub Project ID.')
+    required_config.add_option('developer_github_project_number', parser=int, doc='Set the project id of the github '
+                                                                                          'GitHub Developer Project ID.')
+    required_config.add_option('community_github_project_number', parser=int, doc='Set the project id of the github '
+                                                                                          'GitHub Community Project ID.')
     required_config.add_option('github_token', parser=str, doc='Set the token of the GitHub machine user.')
     required_config.add_option('e2e_pipeline', parser=str, default='Review,Ready For Testing,Testing',
                                doc='Set the target e2e pipeline to '
@@ -49,8 +52,8 @@ def get_config():
 
 
 def settings():
-    global FLASK_LOGLEVEL, FLASK_PASSWORD, FLASK_USERNAME, GITHUB_OWNER, GITHUB_REPOSITORY, GITHUB_PROJECT_NUMBER, GITHUB_REPOSITORY_TEST, \
-        E2E_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, gtihub_project_manager
+    global FLASK_LOGLEVEL, FLASK_PASSWORD, FLASK_USERNAME, GITHUB_OWNER, GITHUB_REPOSITORY, DEVELOPER_GITHUB_PROJECT_NUMBER, COMMUNITY_GITHUB_PROJECT_NUMBER, GITHUB_REPOSITORY_TEST, \
+        E2E_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, development_project_manager, community_project_manager
     config = get_config()
     FLASK_LOGLEVEL = config('flask_loglevel')
     FLASK_PASSWORD = generate_password_hash(config('flask_password'))
@@ -58,14 +61,19 @@ def settings():
     GITHUB_OWNER = config('github_owner')
     GITHUB_REPOSITORY = config('github_repository')
     GITHUB_REPOSITORY_TEST = config('github_repository_test')
-    GITHUB_PROJECT_NUMBER = config('github_project_number')
+    DEVELOPER_GITHUB_PROJECT_NUMBER = config('developer_github_project_number')
+    COMMUNITY_GITHUB_PROJECT_NUMBER = config('community_github_project_number')
     E2E_PIPELINE = config('e2e_pipeline')
     BACKPORT_LABEL_KEY = config('backport_label_key', default='backport-needed')
 
     gh_api = Github(config('github_token'))
     repo = gh_api.get_repo('{}/{}'.format(GITHUB_OWNER, GITHUB_REPOSITORY))
     repo_test = gh_api.get_repo('{}/{}'.format(GITHUB_OWNER, GITHUB_REPOSITORY_TEST))
-    gtihub_project_manager = GitHubProjectManager(GITHUB_OWNER, GITHUB_REPOSITORY, GITHUB_PROJECT_NUMBER, {
+    development_project_manager = GitHubProjectManager(GITHUB_OWNER, GITHUB_REPOSITORY, DEVELOPER_GITHUB_PROJECT_NUMBER, {
+        'Authorization': f'Bearer {config("github_token")}',
+        'Content-Type': 'application/json'
+    })
+    community_project_manager = GitHubProjectManager(GITHUB_OWNER, GITHUB_REPOSITORY, COMMUNITY_GITHUB_PROJECT_NUMBER, {
         'Authorization': f'Bearer {config("github_token")}',
         'Content-Type': 'application/json'
     })

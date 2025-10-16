@@ -13,7 +13,8 @@ Before starting this bot, you should setup following env and run that commands:
 export GITHUB_TOKEN="" 
 export GITHUB_OWNER="" 
 export GITHUB_REPOSITORY=
-export GITHUB_PROJECT_NUMBER=""
+export DEVELOPER_GITHUB_PROJECT_NUMBER=""
+export COMMUNITY_GITHUB_PROJECT_NUMBER=""
 export E2E_PIPELINE="New Issues, Product Backlog, Icebox" # example
 export FLASK_USERNAME="" # Use basic auth here, such as http://username:passowrd@localhost:8080
 export FLASK_PASSWORD=""
@@ -37,8 +38,9 @@ There are two webhooks deal with different features:
 1. Github Repository Webhook (`GITHUB_TOKEN`)  
     When adding backport label on the Github, this bot will handle webhook to do following things:
     - Create an issue in `GITHUB_REPOSITORY`.
-2. Github Organization Webook (`GITHUB_PROJECT_NUMBER`)  
-    When moving the issue to specified pipleline (`E2E_PIPELINE`) in Github Project, this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
+2. Github Organization Webook 
+    - When moving the issue to specified pipleline (`E2E_PIPELINE`) in developer Github Project (`DEVELOPER_GITHUB_PROJECT_NUMBER`), this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
+    - When moving the issue to specficed status in community Github Proejct (`COMMUNITY_GITHUB_PROJECT_NUMBER`), this bot will add a milestone to the issue.
 
 ## References
 

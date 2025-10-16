@@ -1,5 +1,5 @@
 import re
-from harvester_github_bot import app, zenh_api, gtihub_project_manager, repo, \
+from harvester_github_bot import app, repo, \
     BACKPORT_LABEL_KEY
 from harvester_github_bot.exception import CustomException, ExistedBackportComment
 from harvester_github_bot.label_action.create_gui_issue import CREATE_GUI_ISSUE_LABEL
