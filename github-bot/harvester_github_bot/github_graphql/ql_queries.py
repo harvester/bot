@@ -33,6 +33,18 @@ query($organization: String!, $project_number: Int!) {
               name
             }
           }
+          ... on ProjectV2IterationField {
+            id
+            name
+            configuration {
+              iterations {
+                startDate
+                id
+                duration
+                title
+              }
+            }
+          }
         }
       }
     }
