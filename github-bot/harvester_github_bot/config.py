@@ -16,6 +16,7 @@ GITHUB_REPOSITORY = ""
 GITHUB_REPOSITORY_TEST = ""
 DEVELOPER_GITHUB_PROJECT_NUMBER = ""
 COMMUNITY_GITHUB_PROJECT_NUMBER = ""
+WORKING_STATUS = ""
 E2E_PIPELINE = ""
 BACKPORT_LABEL_KEY = ""
 
@@ -37,6 +38,11 @@ class BotConfig(RequiredConfigMixin):
     required_config.add_option('community_github_project_number', parser=int, doc='Set the project id of the github '
                                                                                           'GitHub Community Project ID.')
     required_config.add_option('github_token', parser=str, doc='Set the token of the GitHub machine user.')
+    required_config.add_option('working_status', parser=str,
+                               default='Analysis/Design,Implement,Review,'
+                                       'Ready For Testing',
+                               doc='Set the status that will trigger '
+                                   'moving issue to current sprint.')
     required_config.add_option('e2e_pipeline', parser=str, default='Review,Ready For Testing,Testing',
                                doc='Set the target e2e pipeline to '
                                    'handle events for.')
@@ -53,7 +59,7 @@ def get_config():
 
 def settings():
     global FLASK_LOGLEVEL, FLASK_PASSWORD, FLASK_USERNAME, GITHUB_OWNER, GITHUB_REPOSITORY, DEVELOPER_GITHUB_PROJECT_NUMBER, COMMUNITY_GITHUB_PROJECT_NUMBER, GITHUB_REPOSITORY_TEST, \
-        E2E_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, development_project_manager, community_project_manager
+        WORKING_STATUS, E2E_PIPELINE, BACKPORT_LABEL_KEY, gh_api, zenh_api, repo, repo_test, development_project_manager, community_project_manager
     config = get_config()
     FLASK_LOGLEVEL = config('flask_loglevel')
     FLASK_PASSWORD = generate_password_hash(config('flask_password'))
@@ -63,6 +69,7 @@ def settings():
     GITHUB_REPOSITORY_TEST = config('github_repository_test')
     DEVELOPER_GITHUB_PROJECT_NUMBER = config('developer_github_project_number')
     COMMUNITY_GITHUB_PROJECT_NUMBER = config('community_github_project_number')
+    WORKING_STATUS = config('working_status')
     E2E_PIPELINE = config('e2e_pipeline')
     BACKPORT_LABEL_KEY = config('backport_label_key', default='backport-needed')
 

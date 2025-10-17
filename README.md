@@ -15,6 +15,7 @@ export GITHUB_OWNER=""
 export GITHUB_REPOSITORY=
 export DEVELOPER_GITHUB_PROJECT_NUMBER=""
 export COMMUNITY_GITHUB_PROJECT_NUMBER=""
+export WORKING_STATUS="Analysis/Design,Implement,Review,Ready For Testing"
 export E2E_PIPELINE="Review,Ready For Testing,Testing" # example
 export FLASK_USERNAME="" # Use basic auth here, such as http://username:passowrd@localhost:8080
 export FLASK_PASSWORD=""
@@ -40,6 +41,7 @@ There are two webhooks deal with different features:
     - Create an issue in `GITHUB_REPOSITORY`.
 2. Github Organization Webook 
     - When moving the issue to specified pipleline (`E2E_PIPELINE`) in developer Github Project (`DEVELOPER_GITHUB_PROJECT_NUMBER`), this bot will handle the webhook to create comment in `GITHUB_REPOSITORY`, and create an issue in e2e testing repo (`GITHUB_REPOSITORY_TEST`).
+    - When moving the issue to specified status (`WORKING_STATUS`) in developer Github Project (`DEVELOPER_GITHUB_PROJECT_NUMBER`), this bot will automatically add the issue to the current sprint.
     - When moving the issue to specficed status in community Github Proejct (`COMMUNITY_GITHUB_PROJECT_NUMBER`), this bot will add a milestone to the issue.
 
 ## References
